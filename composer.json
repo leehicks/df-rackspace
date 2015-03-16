@@ -42,5 +42,11 @@
     "psr-4": {
       "DreamFactory\\Rackspace\\":"src/"
     }
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "php artisan migrate --path vendor/dreamfactory/rave-rackspace/database/migrations/",
+      "php artisan db:seed --class DreamFactory\\Rackspace\\Database\\Seeds\\RackspaceSeeder"
+    ]
   }
 }
