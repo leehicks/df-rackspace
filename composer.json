@@ -1,0 +1,46 @@
+{
+  "name": "dreamfactory/rave-rackspace",
+  "description": "Rackspace package containing Rackspace/OpenStack components for the DreamFactory Rave(tm) core.",
+  "minimum-stability": "dev",
+  "keywords": [
+    "dreamfactory",
+    "dsp",
+    "rave",
+    "rackspace",
+    "openstack",
+    "storage blob"
+  ],
+  "homepage": "https://www.dreamfactory.com/",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Arif Islam",
+      "email": "arifislam@dreamfactory.com"
+    },
+    {
+      "name": "Jerry Ablan",
+      "email": "jerryablan@dreamfactory.com"
+    },
+    {
+      "name": "Lee Hicks",
+      "email": "leehicks@dreamfactory.com"
+    }
+  ],
+  "support": {
+    "email": "support@dreamfactory.com",
+    "issues": "https://github.com/dreamfactorysoftware/rave/issues",
+    "wiki": "https://github.com/dreamfactorysoftware/rave/wiki",
+    "source": "https://github.com/dreamfactorysoftware/rave"
+  },
+  "require": {
+    "dreamfactory/php-utils": "dev-develop as dev-master",
+    "dreamfactory/rave-common": "dev-develop as dev-master",
+    "rhumsaa/array_column": "~1.1",
+    "rackspace/php-opencloud": "~1.5.0@stable"
+  },
+  "autoload":{
+    "psr-4": {
+      "DreamFactory\\Rackspace\\":"src/"
+    }
+  }
+}
