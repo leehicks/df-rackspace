@@ -44,10 +44,10 @@
     }
   },
   "scripts": {
-    "post-package-install": [
+    "post-install-cmd": [
       "php -v"
     ],
-    "post-package-update": [
+    "post-update-cmd": [
       "php -v"
     ]
   }
