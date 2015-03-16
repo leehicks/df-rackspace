@@ -42,13 +42,5 @@
     "psr-4": {
       "DreamFactory\\Rackspace\\":"src/"
     }
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "php -v"
-    ],
-    "post-update-cmd": [
-      "php -v"
-    ]
   }
 }
