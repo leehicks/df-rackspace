@@ -45,11 +45,11 @@
   },
   "scripts": {
     "post-package-install": [
-      "php artisan migrate --path vendor/dreamfactory/rave-rackspace/database/migrations/",
+      "php ../../../artisan migrate --path database/migrations/",
       "php artisan db:seed --class DreamFactory\\Rackspace\\Database\\Seeds\\RackspaceSeeder"
     ],
     "post-package-update": [
-      "php artisan migrate --path vendor/dreamfactory/rave-rackspace/database/migrations/",
+      "php ../../../artisan migrate --path database/migrations/",
       "php artisan db:seed --class DreamFactory\\Rackspace\\Database\\Seeds\\RackspaceSeeder"
     ]
   }
