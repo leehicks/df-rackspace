@@ -18,11 +18,9 @@
  * limitations under the License.
  */
 
-require_once( __DIR__.'/../../../../tests/FileServiceTestCase.php' );
-
 use DreamFactory\Library\Utility\Enums\Verbs;
 
-class FileServiceRackspaceCloudFilesTest extends FileServiceTestCase
+class FileServiceRackspaceCloudFilesTest extends \Rave\Testing\FileServiceTestCase
 {
     protected static $staged = false;
 
