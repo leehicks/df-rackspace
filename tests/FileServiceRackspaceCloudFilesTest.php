@@ -34,7 +34,7 @@ class FileServiceRackspaceCloudFilesTest extends FileServiceTestCase
         Artisan::call('db:seed', ['--class' => 'DreamFactory\\Rackspace\\Database\\Seeds\\RackspaceSeeder']);
         if(!$this->serviceExists('ros'))
         {
-            \Rave\Models\Service::create(
+            \DreamFactory\Rave\Models\Service::create(
                 [
                     "name"        => "ros",
                     "label"       => "Rackspace Cloud Files service",

@@ -20,7 +20,7 @@
 
 namespace DreamFactory\Rackspace\Services;
 
-use Rave\Services\RemoteFileService;
+use DreamFactory\Rave\Services\RemoteFileService;
 use DreamFactory\Rackspace\Components\OpenStackObjectStorageSystem;
 
 /**

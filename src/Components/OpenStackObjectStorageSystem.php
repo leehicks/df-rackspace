@@ -21,11 +21,11 @@
 namespace DreamFactory\Rackspace\Components;
 
 use InvalidArgumentException;
-use Rave\Utility\FileUtilities;
-use Rave\Components\RemoteFileSystem;
+use DreamFactory\Rave\Utility\FileUtilities;
+use DreamFactory\Rave\Components\RemoteFileSystem;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Rave\Common\Exceptions\RaveException;
-use DreamFactory\Rave\Common\Exceptions\BadRequestException;
+use DreamFactory\Rave\Exceptions\RaveException;
+use DreamFactory\Rave\Exceptions\BadRequestException;
 use OpenCloud\Rackspace;
 use OpenCloud\OpenStack;
 use OpenCloud\Common\Collection;
