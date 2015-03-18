@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rackspace\Models;
+namespace DreamFactory\Rave\Rackspace\Models;
 
 use DreamFactory\Rave\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Rave\Models\BaseServiceConfigModel;
@@ -26,7 +26,7 @@ use DreamFactory\Rave\Models\BaseServiceConfigModel;
 /**
  * Class RackspaceConfig
  *
- * @package DreamFactory\Rackspace\Models
+ * @package DreamFactory\Rave\Rackspace\Models
  */
 class RackspaceConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {

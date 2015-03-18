@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rackspace\Services;
+namespace DreamFactory\Rave\Rackspace\Services;
 
 use DreamFactory\Rave\Services\RemoteFileService;
-use DreamFactory\Rackspace\Components\OpenStackObjectStorageSystem;
+use DreamFactory\Rave\Rackspace\Components\OpenStackObjectStorageSystem;
 
 /**
  * Class OpenStackObjectStore
  *
- * @package DreamFactory\Rackspace\Services
+ * @package DreamFactory\Rave\Rackspace\Services
  */
 class OpenStackObjectStore extends RemoteFileService
 {

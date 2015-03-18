@@ -40,7 +40,7 @@
   },
   "autoload":{
     "psr-4": {
-      "DreamFactory\\Rackspace\\":"src/"
+      "DreamFactory\\Rave\\Rackspace\\":"src/"
     }
   }
 }

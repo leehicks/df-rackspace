@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rackspace\Database\Seeds;
+namespace DreamFactory\Rave\Rackspace\Database\Seeds;
 
 use Illuminate\Database\Seeder;
 use DreamFactory\Rave\Models\ServiceType;
@@ -26,7 +26,7 @@ use DreamFactory\Rave\Models\ServiceType;
 /**
  * Class RackspaceSeeder
  *
- * @package DreamFactory\Rackspace\Database\Seeds
+ * @package DreamFactory\Rave\Rackspace\Database\Seeds
  */
 class RackspaceSeeder extends Seeder
 {
@@ -43,8 +43,8 @@ class RackspaceSeeder extends Seeder
             ServiceType::create(
                 [
                     'name'           => 'ros_file',
-                    'class_name'     => "DreamFactory\\Rackspace\\Services\\OpenStackObjectStore",
-                    'config_handler' => "DreamFactory\\Rackspace\\Models\\RackspaceConfig",
+                    'class_name'     => "DreamFactory\\Rave\\Rackspace\\Services\\OpenStackObjectStore",
+                    'config_handler' => "DreamFactory\\Rave\\Rackspace\\Models\\RackspaceConfig",
                     'label'          => 'Rackspace OpenStack Object Storage  service',
                     'description'    => 'File service supporting Rackspace OpenStack Object Storage system.',
                     'group'          => 'files',

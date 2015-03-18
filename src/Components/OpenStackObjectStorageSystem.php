@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rackspace\Components;
+namespace DreamFactory\Rave\Rackspace\Components;
 
 use InvalidArgumentException;
 use DreamFactory\Rave\Utility\FileUtilities;
@@ -37,7 +37,7 @@ use OpenCloud\Common\Exceptions\ContainerNotFoundError;
 /**
  * Class OpenStackObjectStorageSystem
  *
- * @package DreamFactory\Rackspace\Components
+ * @package DreamFactory\Rave\Rackspace\Components
  */
 class OpenStackObjectStorageSystem extends RemoteFileSystem
 {
