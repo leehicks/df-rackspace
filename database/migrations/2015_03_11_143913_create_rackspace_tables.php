@@ -22,7 +22,7 @@ class CreateRackspaceTables extends Migration
             function ( Blueprint $t )
             {
                 $t->integer( 'service_id' )->unsigned()->primary();
-                $t->foreign( 'service_id' )->references( 'id' )->on( 'services' )->onDelete( 'cascade' );
+                $t->foreign( 'service_id' )->references( 'id' )->on( 'service' )->onDelete( 'cascade' );
                 $t->string( 'username' )->nullable();
                 $t->longText( 'password' )->nullable();
                 $t->string( 'tenant_name' )->nullable();
