@@ -24,11 +24,11 @@ use Illuminate\Database\Seeder;
 use DreamFactory\Rave\Models\ServiceType;
 
 /**
- * Class RackspaceSeeder
+ * Class DatabaseSeeder
  *
  * @package DreamFactory\Rave\Rackspace\Database\Seeds
  */
-class RackspaceSeeder extends Seeder
+class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.

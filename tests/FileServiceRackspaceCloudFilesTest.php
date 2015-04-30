@@ -29,7 +29,7 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
         parent::stage();
 
         Artisan::call('migrate', ['--path' => 'vendor/dreamfactory/rave-rackspace/database/migrations/']);
-        Artisan::call('db:seed', ['--class' => 'DreamFactory\\Rave\\Rackspace\\Database\\Seeds\\RackspaceSeeder']);
+        Artisan::call('db:seed', ['--class' => 'DreamFactory\\Rave\\Rackspace\\Database\\Seeds\\DatabaseSeeder']);
         if(!$this->serviceExists('ros'))
         {
             \DreamFactory\Rave\Models\Service::create(
