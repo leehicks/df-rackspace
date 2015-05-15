@@ -17,41 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace DreamFactory\Rave\Rackspace\Database\Seeds;
 
-use Illuminate\Database\Seeder;
-use DreamFactory\Rave\Models\ServiceType;
+use DreamFactory\Rave\Database\Seeds\BaseModelSeeder;
 
-/**
- * Class DatabaseSeeder
- *
- * @package DreamFactory\Rave\Rackspace\Database\Seeds
- */
-class DatabaseSeeder extends Seeder
+class DatabaseSeeder extends BaseModelSeeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        if ( !ServiceType::whereName( "ros_file" )->count() )
-        {
-            // Add the service type
-            ServiceType::create(
-                [
-                    'name'           => 'ros_file',
-                    'class_name'     => "DreamFactory\\Rave\\Rackspace\\Services\\OpenStackObjectStore",
-                    'config_handler' => "DreamFactory\\Rave\\Rackspace\\Models\\RackspaceConfig",
-                    'label'          => 'Rackspace OpenStack Object Storage  service',
-                    'description'    => 'File service supporting Rackspace OpenStack Object Storage system.',
-                    'group'          => 'files',
-                    'singleton'      => 1
-                ]
-            );
-            $this->command->info( 'Rackspace OpenStack Object Storage service type seeded!' );
-        }
-    }
+    protected $modelClass = 'DreamFactory\\Rave\\Models\\ServiceType';
+
+    protected $records = [
+        [
+            'name'           => 'ros_file',
+            'class_name'     => "DreamFactory\\Rave\\Rackspace\\Services\\OpenStackObjectStore",
+            'config_handler' => "DreamFactory\\Rave\\Rackspace\\Models\\RackspaceConfig",
+            'label'          => 'Rackspace OpenStack Object Storage  service',
+            'description'    => 'File service supporting Rackspace OpenStack Object Storage system.',
+            'group'          => 'files',
+            'singleton'      => 1
+        ]
+    ];
 }

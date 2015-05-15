@@ -20,7 +20,6 @@
 
 namespace DreamFactory\Rave\Rackspace\Models;
 
-use DreamFactory\Rave\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Rave\Models\BaseServiceConfigModel;
 
 /**
@@ -28,7 +27,7 @@ use DreamFactory\Rave\Models\BaseServiceConfigModel;
  *
  * @package DreamFactory\Rave\Rackspace\Models
  */
-class RackspaceConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
+class RackspaceConfig extends BaseServiceConfigModel
 {
     protected $table = 'rackspace_config';
 
