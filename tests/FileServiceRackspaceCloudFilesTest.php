@@ -24,13 +24,15 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
 {
     protected static $staged = false;
 
+    protected $serviceId = 'ros';
+
     public function stage()
     {
         parent::stage();
 
-        Artisan::call('migrate', ['--path' => 'vendor/dreamfactory/rave-rackspace/database/migrations/']);
-        Artisan::call('db:seed', ['--class' => 'DreamFactory\\Rave\\Rackspace\\Database\\Seeds\\DatabaseSeeder']);
-        if(!$this->serviceExists('ros'))
+        Artisan::call( 'migrate', [ '--path' => 'vendor/dreamfactory/rave-rackspace/database/migrations/' ] );
+        Artisan::call( 'db:seed', [ '--class' => 'DreamFactory\\Rave\\Rackspace\\Database\\Seeds\\DatabaseSeeder' ] );
+        if ( !$this->serviceExists( 'ros' ) )
         {
             \DreamFactory\Rave\Models\Service::create(
                 [
@@ -40,23 +42,17 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
                     "is_active"   => 1,
                     "type"        => "ros_file",
                     "config"      => [
-                        'username' => env('ROS_USERNAME'),
-                        'password' => env('ROS_PASSWORD'),
-                        'tenant_name' => env('ROS_TENANT_NAME'),
-                        'api_key' => env('ROS_API_KEY'),
-                        'url' => env('ROS_URL'),
-                        'region' => env('ROS_REGION'),
-                        'storage_type' => env('ROS_STORAGE_TYPE')
+                        'username'     => env( 'ROS_USERNAME' ),
+                        'password'     => env( 'ROS_PASSWORD' ),
+                        'tenant_name'  => env( 'ROS_TENANT_NAME' ),
+                        'api_key'      => env( 'ROS_API_KEY' ),
+                        'url'          => env( 'ROS_URL' ),
+                        'region'       => env( 'ROS_REGION' ),
+                        'storage_type' => env( 'ROS_STORAGE_TYPE' )
                     ]
                 ]
             );
         }
-    }
-
-    public function setService()
-    {
-        $this->service = 'ros';
-        $this->prefix = $this->prefix.'/'.$this->service;
     }
 
     /************************************************
@@ -65,10 +61,13 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
 
     public function testPOSTContainerWithCheckExist()
     {
-        $payload = '{"name":"'.static::CONTAINER_2.'"}';
+        $payload = '{"name":"' . static::CONTAINER_2 . '"}';
 
-        $rs = $this->callWithPayload(Verbs::POST, $this->prefix, $payload);
-        $this->assertEquals('{"name":"'.static::CONTAINER_2.'","path":"'.static::CONTAINER_2.'"}', $rs->getContent());
+        $rs = $this->makeRequest( Verbs::POST, null, [ ], $payload );
+        $this->assertEquals(
+            '{"name":"' . static::CONTAINER_2 . '","path":"' . static::CONTAINER_2 . '"}',
+            json_encode( $rs->getContent(), JSON_UNESCAPED_SLASHES )
+        );
 
         //Check_exist is not currently supported by Rackspace Could Files implementation.
         //$rs = $this->_call(Verbs::POST, $this->prefix."?check_exist=true", $payload);
@@ -82,7 +81,7 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
 
     public function testGETContainerIncludeProperties()
     {
-        $this->assertEquals(1,1);
+        $this->assertEquals( 1, 1 );
         //This feature is not currently supported  by Rackspace Could Files implementation.
         //$rs = $this->call(Verbs::GET, $this->prefix."?include_properties=true");
     }
