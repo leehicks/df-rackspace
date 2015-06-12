@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of the DreamFactory Rave(tm)
+ * This file is part of the DreamFactory(tm)
  *
- * DreamFactory Rave(tm) <http://github.com/dreamfactorysoftware/rave>
+ * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
  * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\Rackspace\Services;
+namespace DreamFactory\Core\Rackspace\Services;
 
-use DreamFactory\Rave\Services\RemoteFileService;
-use DreamFactory\Rave\Rackspace\Components\OpenStackObjectStorageSystem;
+use DreamFactory\Core\Services\RemoteFileService;
+use DreamFactory\Core\Rackspace\Components\OpenStackObjectStorageSystem;
 
 /**
  * Class OpenStackObjectStore
  *
- * @package DreamFactory\Rave\Rackspace\Services
+ * @package DreamFactory\Core\Rackspace\Services
  */
 class OpenStackObjectStore extends RemoteFileService
 {

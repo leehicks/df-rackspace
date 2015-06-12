@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of the DreamFactory Rave(tm)
+ * This file is part of the DreamFactory(tm)
  *
- * DreamFactory Rave(tm) <http://github.com/dreamfactorysoftware/rave>
+ * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
  * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\Rackspace\Components;
+namespace DreamFactory\Core\Rackspace\Components;
 
 use InvalidArgumentException;
-use DreamFactory\Rave\Utility\FileUtilities;
-use DreamFactory\Rave\Components\RemoteFileSystem;
+use DreamFactory\Core\Utility\FileUtilities;
+use DreamFactory\Core\Components\RemoteFileSystem;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Rave\Exceptions\RaveException;
-use DreamFactory\Rave\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\RaveException;
+use DreamFactory\Core\Exceptions\BadRequestException;
 use OpenCloud\Rackspace;
 use OpenCloud\OpenStack;
 use OpenCloud\Common\Collection;
@@ -37,7 +37,7 @@ use OpenCloud\Common\Exceptions\ContainerNotFoundError;
 /**
  * Class OpenStackObjectStorageSystem
  *
- * @package DreamFactory\Rave\Rackspace\Components
+ * @package DreamFactory\Core\Rackspace\Components
  */
 class OpenStackObjectStorageSystem extends RemoteFileSystem
 {

@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of the DreamFactory Rave(tm)
+ * This file is part of the DreamFactory(tm)
  *
- * DreamFactory Rave(tm) <http://github.com/dreamfactorysoftware/rave>
+ * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
  * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,19 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace DreamFactory\Rave\Rackspace\Database\Seeds;
+namespace DreamFactory\Core\Rackspace\Database\Seeds;
 
-use DreamFactory\Rave\Database\Seeds\BaseModelSeeder;
+use DreamFactory\Core\Database\Seeds\BaseModelSeeder;
 
 class DatabaseSeeder extends BaseModelSeeder
 {
-    protected $modelClass = 'DreamFactory\\Rave\\Models\\ServiceType';
+    protected $modelClass = 'DreamFactory\\Core\\Models\\ServiceType';
 
     protected $records = [
         [
             'name'           => 'ros_file',
-            'class_name'     => "DreamFactory\\Rave\\Rackspace\\Services\\OpenStackObjectStore",
-            'config_handler' => "DreamFactory\\Rave\\Rackspace\\Models\\RackspaceConfig",
+            'class_name'     => "DreamFactory\\Core\\Rackspace\\Services\\OpenStackObjectStore",
+            'config_handler' => "DreamFactory\\Core\\Rackspace\\Models\\RackspaceConfig",
             'label'          => 'Rackspace OpenStack Object Storage  service',
             'description'    => 'File service supporting Rackspace OpenStack Object Storage system.',
             'group'          => 'files',

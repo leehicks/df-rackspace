@@ -1,11 +1,11 @@
 {
-  "name": "dreamfactory/rave-rackspace",
-  "description": "Rackspace package containing Rackspace/OpenStack components for the DreamFactory Rave(tm) core.",
+  "name": "dreamfactory/df-rackspace",
+  "description": "Rackspace package containing Rackspace/OpenStack components for the DreamFactory(tm) core.",
   "minimum-stability": "dev",
   "keywords": [
     "dreamfactory",
     "dsp",
-    "rave",
+    "rest",
     "rackspace",
     "openstack",
     "storage blob"
@@ -28,17 +28,17 @@
   ],
   "support": {
     "email": "support@dreamfactory.com",
-    "issues": "https://github.com/dreamfactorysoftware/rave/issues",
-    "wiki": "https://github.com/dreamfactorysoftware/rave/wiki",
-    "source": "https://github.com/dreamfactorysoftware/rave"
+    "source": "https://github.com/dreamfactorysoftware/df-rackspace",
+    "issues": "https://github.com/dreamfactorysoftware/df-rackspace/issues",
+    "wiki": "https://wiki.dreamfactory.com"
   },
   "require": {
-    "dreamfactory/rave": "dev-develop as dev-master",
+    "dreamfactory/df-core": "dev-develop as dev-master",
     "rackspace/php-opencloud": "~1.5.0@stable"
   },
   "autoload":{
     "psr-4": {
-      "DreamFactory\\Rave\\Rackspace\\":"src/"
+      "DreamFactory\\Core\\Rackspace\\":"src/"
     }
   }
 }

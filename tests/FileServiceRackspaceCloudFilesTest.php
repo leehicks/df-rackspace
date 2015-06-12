@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of the DreamFactory Rave(tm)
+ * This file is part of the DreamFactory(tm)
  *
- * DreamFactory Rave(tm) <http://github.com/dreamfactorysoftware/rave>
+ * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
  * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@
 
 use DreamFactory\Library\Utility\Enums\Verbs;
 
-class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\FileServiceTestCase
+class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\FileServiceTestCase
 {
     protected static $staged = false;
 
@@ -30,11 +30,11 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Rave\Testing\File
     {
         parent::stage();
 
-        Artisan::call( 'migrate', [ '--path' => 'vendor/dreamfactory/rave-rackspace/database/migrations/' ] );
-        Artisan::call( 'db:seed', [ '--class' => 'DreamFactory\\Rave\\Rackspace\\Database\\Seeds\\DatabaseSeeder' ] );
+        Artisan::call( 'migrate', [ '--path' => 'vendor/dreamfactory/df-rackspace/database/migrations/' ] );
+        Artisan::call( 'db:seed', [ '--class' => 'DreamFactory\\Core\\Rackspace\\Database\\Seeds\\DatabaseSeeder' ] );
         if ( !$this->serviceExists( 'ros' ) )
         {
-            \DreamFactory\Rave\Models\Service::create(
+            \DreamFactory\Core\Models\Service::create(
                 [
                     "name"        => "ros",
                     "label"       => "Rackspace Cloud Files service",
