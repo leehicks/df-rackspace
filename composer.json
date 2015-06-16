@@ -36,9 +36,9 @@
     "dreamfactory/df-core": "dev-develop as dev-master",
     "rackspace/php-opencloud": "~1.5.0@stable"
   },
-  "autoload":{
+  "autoload": {
     "psr-4": {
-      "DreamFactory\\Core\\Rackspace\\":"src/"
+      "DreamFactory\\Core\\Rackspace\\": "src/"
     }
   }
 }
