@@ -19,7 +19,7 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\File
                     "name"        => "ros",
                     "label"       => "Rackspace Cloud Files service",
                     "description" => "Rackspace Cloud Files service for unit test",
-                    "is_active"   => 1,
+                    "is_active"   => true,
                     "type"        => "ros_file",
                     "config"      => [
                         'username'     => env('ROS_USERNAME'),

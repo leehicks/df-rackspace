@@ -18,7 +18,7 @@ class DatabaseSeeder extends BaseModelSeeder
             'label'          => 'Rackspace OpenStack Object Storage  service',
             'description'    => 'File service supporting Rackspace OpenStack Object Storage system.',
             'group'          => 'files',
-            'singleton'      => 1
+            'singleton'      => false
         ]
     ];
 }
