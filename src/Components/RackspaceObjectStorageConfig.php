@@ -1,11 +1,10 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
+use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\RackspaceConfig;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Core\SqlDbCore\ColumnSchema;
-use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 
 class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
 {
@@ -114,37 +113,18 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
     {
         $rosConfig = new RackspaceConfig();
         $pathConfig = new FilePublicPath();
-        $out = [];
+        $out = null;
 
-        $rosSchema = $rosConfig->getTableSchema();
-        if ($rosSchema) {
-            foreach ($rosSchema->columns as $name => $column) {
-                if ('service_id' === $name) {
-                    continue;
-                }
+        $rosSchema = $rosConfig->getConfigSchema();
+        $pathSchema = $pathConfig->getConfigSchema();
 
-                /** @var ColumnSchema $column */
-                $out[$name] = $column->toArray();
-            }
-            //return $out;
+        if (!empty($rosSchema)) {
+            $out = $rosSchema;
+        }
+        if (!empty($pathSchema)) {
+            $out = ($out) ? array_merge($out, $pathSchema) : $pathSchema;
         }
 
-        $pathSchema = $pathConfig->getTableSchema();
-        if ($pathSchema) {
-            foreach ($pathSchema->columns as $name => $column) {
-                if ('service_id' === $name) {
-                    continue;
-                }
-
-                /** @var ColumnSchema $column */
-                $out[$name] = $column->toArray();
-            }
-        }
-
-        if (!empty($out)) {
-            return $out;
-        }
-
-        return null;
+        return $out;
     }
 }

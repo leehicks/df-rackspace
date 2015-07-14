@@ -24,4 +24,33 @@ class RackspaceConfig extends BaseServiceConfigModel
         'region',
         'storage_type'
     ];
+
+    /**
+     * @param array $schema
+     */
+    protected static function prepareConfigSchemaField(array &$schema)
+    {
+        parent::prepareConfigSchemaField($schema);
+
+        switch ($schema['name']) {
+            case 'region':
+                $schema['type'] = 'picklist';
+                $schema['values'] = [
+                    ['label' => 'Chicago', 'name' => 'ORD', 'url' => 'https://identity.api.rackspacecloud.com'],
+                    ['label' => 'Dallas', 'name' => 'DFW', 'url' => 'https://identity.api.rackspacecloud.com'],
+                    ['label' => 'London', 'name' => 'LON', 'url' => 'https://lon.identity.api.rackspacecloud.com'],
+                ];
+                $schema['description'] = 'Select the region to be accessed by this service connection.';
+                break;
+            case 'key':
+                $schema['label'] = 'Access Key ID';
+                $schema['description'] = 'An AWS account root or IAM access key.';
+                break;
+            case 'secret':
+                $schema['label'] = 'Secret Access Key';
+                $schema['description'] = 'An AWS account root or IAM secret key.';
+                break;
+        }
+    }
+
 }
