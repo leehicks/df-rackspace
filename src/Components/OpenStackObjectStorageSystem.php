@@ -55,6 +55,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $_storageType = strtolower(ArrayUtils::get($config, 'storage_type'));
         $_credentials = $config;
+        $this->container = ArrayUtils::get($config, 'container');
         //Session::replaceLookups( $_credentials, true );
 
         switch ($_storageType) {
@@ -113,6 +114,9 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             }
 
             $this->_blobConn = $_os->ObjectStore('cloudFiles', $_region);
+            if (!$this->containerExists($this->container)) {
+                $this->createContainer(['name' => $this->container]);
+            }
         } catch (\Exception $ex) {
             throw new DfException('Failed to launch OpenStack service: ' . $ex->getMessage());
         }
@@ -137,6 +141,10 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     public function listContainers($include_properties = false)
     {
         $this->checkConnection();
+
+        if (!empty($this->container)) {
+            return $this->listResource($include_properties);
+        }
 
         try {
             /** @var Collection $_containers */
@@ -571,7 +579,10 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             } elseif (!empty($_obj->subdir)) // sub directories formatted differently
             {
                 $_out[] = array(
-                    'name' => $_obj->subdir
+                    'name'           => $_obj->subdir,
+                    'content_type'   => null,
+                    'content_length' => 0,
+                    'last_modified'  => null
                 );
             }
         }

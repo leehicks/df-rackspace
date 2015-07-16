@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
+use DreamFactory\Core\Components\FileServiceWithContainer;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\RackspaceConfig;
@@ -8,6 +9,8 @@ use DreamFactory\Library\Utility\ArrayUtils;
 
 class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
 {
+    use FileServiceWithContainer;
+
     /**
      * @param int $id
      *
@@ -47,7 +50,8 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
         $rosConfig = RackspaceConfig::find($id);
         $pathConfig = FilePublicPath::find($id);
         $configPath = [
-            'public_path' => ArrayUtils::get($config, 'public_path')
+            'public_path' => ArrayUtils::get($config, 'public_path'),
+            'container'   => ArrayUtils::get($config, 'container')
         ];
         $configRos = [
             'service_id'   => ArrayUtils::get($config, 'service_id'),
@@ -104,27 +108,5 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
     public static function getAvailableConfigs()
     {
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getConfigSchema()
-    {
-        $rosConfig = new RackspaceConfig();
-        $pathConfig = new FilePublicPath();
-        $out = null;
-
-        $rosSchema = $rosConfig->getConfigSchema();
-        $pathSchema = $pathConfig->getConfigSchema();
-
-        if (!empty($rosSchema)) {
-            $out = $rosSchema;
-        }
-        if (!empty($pathSchema)) {
-            $out = ($out) ? array_merge($out, $pathSchema) : $pathSchema;
-        }
-
-        return $out;
     }
 }
