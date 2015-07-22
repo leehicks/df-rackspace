@@ -97,6 +97,30 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
     /**
      * {@inheritdoc}
      */
+    public static function getConfigSchema()
+    {
+        $rosConfig = new RackspaceConfig();
+        $pathConfig = new FilePublicPath();
+        $out = null;
+
+        $rosSchema = $rosConfig->getConfigSchema();
+        $pathSchema = $pathConfig->getConfigSchema();
+
+        static::updatePathSchema($pathSchema);
+
+        if (!empty($rosSchema)) {
+            $out = $rosSchema;
+        }
+        if (!empty($pathSchema)) {
+            $out = ($out) ? array_merge($out, $pathSchema) : $pathSchema;
+        }
+
+        return $out;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public static function removeConfig($id)
     {
         // deleting is not necessary here due to cascading on_delete relationship in database
