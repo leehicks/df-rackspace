@@ -37,9 +37,9 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function validateConfig($config)
+    public static function validateConfig($config, $create=true)
     {
-        return true;
+        return (RackspaceConfig::validateConfig($config, $create) && FilePublicPath::validateConfig($config, $create));
     }
 
     /**
