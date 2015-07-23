@@ -29,7 +29,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     /**
      * @var Service
      */
-    protected $_blobConn = null;
+    protected $blobConn = null;
 
     //*************************************************************************
     //	Methods
@@ -53,67 +53,67 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      */
     public function __construct($config)
     {
-        $_storageType = strtolower(ArrayUtils::get($config, 'storage_type'));
-        $_credentials = $config;
+        $storageType = strtolower(ArrayUtils::get($config, 'storage_type'));
+        $credentials = $config;
         $this->container = ArrayUtils::get($config, 'container');
-        //Session::replaceLookups( $_credentials, true );
+        //Session::replaceLookups( $credentials, true );
 
-        switch ($_storageType) {
+        switch ($storageType) {
             case 'rackspace cloudfiles':
-                $_authUrl = ArrayUtils::get($_credentials, 'url', 'https://identity.api.rackspacecloud.com/');
-                $_region = ArrayUtils::get($_credentials, 'region', 'DFW');
+                $authUrl = ArrayUtils::get($credentials, 'url', 'https://identity.api.rackspacecloud.com/');
+                $region = ArrayUtils::get($credentials, 'region', 'DFW');
                 break;
             default:
-                $_authUrl = ArrayUtils::get($_credentials, 'url');
-                $_region = ArrayUtils::get($_credentials, 'region');
+                $authUrl = ArrayUtils::get($credentials, 'url');
+                $region = ArrayUtils::get($credentials, 'region');
                 break;
         }
 
-        $_username = ArrayUtils::get($_credentials, 'username');
-        $_password = ArrayUtils::get($_credentials, 'password');
-        $_apiKey = ArrayUtils::get($_credentials, 'api_key');
-        $_tenantName = ArrayUtils::get($_credentials, 'tenant_name');
-        if (empty($_authUrl)) {
+        $username = ArrayUtils::get($credentials, 'username');
+        $password = ArrayUtils::get($credentials, 'password');
+        $apiKey = ArrayUtils::get($credentials, 'api_key');
+        $tenantName = ArrayUtils::get($credentials, 'tenant_name');
+        if (empty($authUrl)) {
             throw new InvalidArgumentException('Object Store authentication URL can not be empty.');
         }
-        if (empty($_username)) {
+        if (empty($username)) {
             throw new InvalidArgumentException('Object Store username can not be empty.');
         }
 
-        $_secret = array('username' => $_username);
+        $secret = ['username' => $username];
 
-        if (empty($_apiKey)) {
-            if (empty($_password)) {
+        if (empty($apiKey)) {
+            if (empty($password)) {
                 throw new InvalidArgumentException('Object Store credentials must contain an API key or a password.');
             }
 
-            $_secret['password'] = $_password;
+            $secret['password'] = $password;
         } else {
-            $_secret['apiKey'] = $_apiKey;
+            $secret['apiKey'] = $apiKey;
         }
-        if (!empty($_tenantName)) {
-            $_secret['tenantName'] = $_tenantName;
+        if (!empty($tenantName)) {
+            $secret['tenantName'] = $tenantName;
         }
-        if (empty($_region)) {
+        if (empty($region)) {
             throw new InvalidArgumentException('Object Store region can not be empty.');
         }
 
         try {
-            switch ($_storageType) {
+            switch ($storageType) {
                 case 'rackspace cloudfiles':
-                    $_pos = stripos($_authUrl, '/v');
-                    if (false !== $_pos) {
-                        $_authUrl = substr($_authUrl, 0, $_pos);
+                    $pos = stripos($authUrl, '/v');
+                    if (false !== $pos) {
+                        $authUrl = substr($authUrl, 0, $pos);
                     }
-                    $_authUrl = FileUtilities::fixFolderPath($_authUrl) . 'v2.0';
-                    $_os = new Rackspace($_authUrl, $_secret);
+                    $authUrl = FileUtilities::fixFolderPath($authUrl) . 'v2.0';
+                    $os = new Rackspace($authUrl, $secret);
                     break;
                 default:
-                    $_os = new OpenStack($_authUrl, $_secret);
+                    $os = new OpenStack($authUrl, $secret);
                     break;
             }
 
-            $this->_blobConn = $_os->ObjectStore('cloudFiles', $_region);
+            $this->_blobConn = $os->ObjectStore('cloudFiles', $region);
             if (!$this->containerExists($this->container)) {
                 $this->createContainer(['name' => $this->container]);
             }
@@ -147,15 +147,15 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         }
 
         try {
-            /** @var Collection $_containers */
-            $_containers = $this->_blobConn->ContainerList();
+            /** @var Collection $containers */
+            $containers = $this->_blobConn->ContainerList();
 
-            $out = array();
+            $out = [];
 
-            /** @var Container $_container */
-            while (($_container = $_containers->Next())) {
-                $_name = rtrim($_container->name);
-                $out[] = array('name' => $_name, 'path' => $_name);
+            /** @var Container $container */
+            while (($container = $containers->Next())) {
+                $name = rtrim($container->name);
+                $out[] = ['name' => $name, 'path' => $name];
             }
 
             return $out;
@@ -172,7 +172,6 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @param bool   $include_files
      * @param bool   $include_folders
      * @param bool   $full_tree
-     * @param bool   $include_properties
      *
      * @throws DfException
      * @return array
@@ -181,23 +180,27 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $container,
         $include_files = true,
         $include_folders = true,
-        $full_tree = false,
-        $include_properties = false
+        $full_tree = false
     ){
         $this->checkConnection();
-        $result = $this->getFolder($container, '', $include_files, $include_folders, $full_tree, false);
-        $result['name'] = $container;
+        $result = $this->getFolder($container, '', $include_files, $include_folders, $full_tree);
 
-        if ($include_properties) {
-            try {
-                /** @var Container $_container */
-                $_container = $this->_blobConn->Container($container);
-                $result['size'] = $_container->bytes;
-            } catch (ContainerNotFoundError $ex) {
-                throw new DfException('Failed to find container: ' . $ex->getMessage());
-            } catch (\Exception $ex) {
-                throw new DfException('Failed to get container: ' . $ex->getMessage());
-            }
+        return $result;
+    }
+
+    public function getContainerProperties($container)
+    {
+        $this->checkConnection();
+        $result = ['name' => $container];
+
+        try {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            $result['size'] = $container->bytes;
+        } catch (ContainerNotFoundError $ex) {
+            throw new DfException('Failed to find container: ' . $ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new DfException('Failed to get container: ' . $ex->getMessage());
         }
 
         return $result;
@@ -216,10 +219,10 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
 
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
 
-            return !empty($_container);
+            return !empty($container);
         } catch (ContainerNotFoundError $ex) {
             return false;
         } catch (\Exception $ex) {
@@ -236,25 +239,25 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @throws DfException
      * @throws \Exception
      */
-    public function createContainer($properties, $metadata = array())
+    public function createContainer($properties, $metadata = [])
     {
         $this->checkConnection();
 
-        $_name = ArrayUtils::get($properties, 'name', ArrayUtils::get($properties, 'path'));
-        if (empty($_name)) {
+        $name = ArrayUtils::get($properties, 'name', ArrayUtils::get($properties, 'path'));
+        if (empty($name)) {
             throw new BadRequestException('No name found for container in create request.');
         }
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container();
-            $_params = array('name' => $_name);
-            if (!$_container->Create($_params)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container();
+            $params = ['name' => $name];
+            if (!$container->Create($params)) {
                 throw new \Exception('');
             }
 
-            return array('name' => $_name, 'path' => $_name);
+            return ['name' => $name, 'path' => $name];
         } catch (\Exception $ex) {
-            throw new DfException("Failed to create container '$_name': " . $ex->getMessage());
+            throw new DfException("Failed to create container '$name': " . $ex->getMessage());
         }
     }
 
@@ -267,17 +270,17 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @throws DfException
      * @return void
      */
-    public function updateContainerProperties($container, $properties = array())
+    public function updateContainerProperties($container, $properties = [])
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            if (!$_container->Update()) {
+            if (!$container->Update()) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -299,13 +302,13 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            if (!$_container->Delete()) {
+            if (!$container->Delete()) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -326,15 +329,15 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject($name);
+            $obj = $container->DataObject($name);
 
-            return !empty($_obj);
+            return !empty($obj);
         } catch (\Exception $ex) {
         }
 
@@ -354,19 +357,19 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject();
-            $_obj->SetData($blob);
-            $_obj->name = $name;
+            $obj = $container->DataObject();
+            $obj->SetData($blob);
+            $obj->name = $name;
             if (!empty($type)) {
-                $_obj->content_type = $type;
+                $obj->content_type = $type;
             }
-            if (!$_obj->Create()) {
+            if (!$obj->Create()) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -387,19 +390,19 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject();
-            $_params = array('name' => $name);
+            $obj = $container->DataObject();
+            $params = ['name' => $name];
             if (!empty($type)) {
-                $_params['content_type'] = $type;
+                $params['content_type'] = $type;
             }
 
-            if (!$_obj->Create($_params, $localFileName)) {
+            if (!$obj->Create($params, $localFileName)) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -417,26 +420,26 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @throws DfException
      * @throws \Exception
      */
-    public function copyBlob($container = '', $name = '', $src_container = '', $src_name = '', $properties = array())
+    public function copyBlob($container = '', $name = '', $src_container = '', $src_name = '', $properties = [])
     {
         $this->checkConnection();
         try {
-            /** @var Container $_src_container */
-            $_src_container = $this->_blobConn->Container($src_container);
-            if (empty($_src_container)) {
+            /** @var Container $src_container */
+            $src_container = $this->_blobConn->Container($src_container);
+            if (empty($src_container)) {
                 throw new \Exception("No container named '$src_container'");
             }
-            /** @var Container $_dest_container */
-            $_dest_container = $this->_blobConn->Container($container);
-            if (empty($_dest_container)) {
+            /** @var Container $dest_container */
+            $dest_container = $this->_blobConn->Container($container);
+            if (empty($dest_container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_source = $_src_container->DataObject($src_name);
-            $_destination = $_dest_container->DataObject();
-            $_destination->name = $name;
+            $source = $src_container->DataObject($src_name);
+            $destination = $dest_container->DataObject();
+            $destination->name = $name;
 
-            $_source->Copy($_destination);
+            $source->Copy($destination);
         } catch (\Exception $ex) {
             throw new DfException("Failed to copy blob '$name': " . $ex->getMessage());
         }
@@ -456,15 +459,15 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject($name);
+            $obj = $container->DataObject($name);
 
-            if (!$_obj->SaveToFilename($localFileName)) {
+            if (!$obj->SaveToFilename($localFileName)) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -484,15 +487,15 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject($name);
+            $obj = $container->DataObject($name);
 
-            return $_obj->SaveToString();
+            return $obj->SaveToString();
         } catch (\Exception $ex) {
             throw new DfException("Failed to retrieve blob '$name': " . $ex->getMessage());
         }
@@ -509,21 +512,21 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = null;
+            $obj = null;
             try {
-                $_obj = $_container->DataObject($name);
+                $obj = $container->DataObject($name);
             } catch (\Exception $ex) {
                 // doesn't exist
                 return;
             }
-            if ($_obj) {
-                $_obj->Delete();
+            if ($obj) {
+                $obj->Delete();
             }
         } catch (\Exception $ex) {
             throw new DfException("Failed to delete blob '$name': " . $ex->getMessage());
@@ -545,49 +548,49 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
 
-        $_options = array();
+        $options = [];
         if (!empty($prefix)) {
-            $_options['prefix'] = $prefix;
+            $options['prefix'] = $prefix;
         }
         if (!empty($delimiter)) {
-            $_options['delimiter'] = $delimiter;
+            $options['delimiter'] = $delimiter;
         }
 
-        /** @var Container $_container */
-        $_container = $this->_blobConn->Container($container);
-        if (empty($_container)) {
+        /** @var Container $container */
+        $container = $this->_blobConn->Container($container);
+        if (empty($container)) {
             throw new \Exception("No container named '$container'");
         }
 
-        /** @var Collection $_list */
-        $_list = $_container->ObjectList($_options);
+        /** @var Collection $list */
+        $list = $container->ObjectList($options);
 
-        $_out = array();
+        $out = [];
 
-        /** @var DataObject $_obj */
-        while (($_obj = $_list->Next())) {
-            if (!empty($_obj->name)) {
-                if (0 == strcmp($prefix, $_obj->name)) {
+        /** @var DataObject $obj */
+        while (($obj = $list->Next())) {
+            if (!empty($obj->name)) {
+                if (0 == strcmp($prefix, $obj->name)) {
                     continue;
                 }
-                $_out[] = array(
-                    'name'           => $_obj->name,
-                    'content_type'   => $_obj->content_type,
-                    'content_length' => $_obj->bytes,
-                    'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($_obj->last_modified))
-                );
-            } elseif (!empty($_obj->subdir)) // sub directories formatted differently
+                $out[] = [
+                    'name'           => $obj->name,
+                    'content_type'   => $obj->content_type,
+                    'content_length' => $obj->bytes,
+                    'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($obj->last_modified))
+                ];
+            } elseif (!empty($obj->subdir)) // sub directories formatted differently
             {
-                $_out[] = array(
-                    'name'           => $_obj->subdir,
+                $out[] = [
+                    'name'           => $obj->subdir,
                     'content_type'   => null,
                     'content_length' => 0,
                     'last_modified'  => null
-                );
+                ];
             }
         }
 
-        return $_out;
+        return $out;
     }
 
     /**
@@ -604,20 +607,20 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject($name);
+            $obj = $container->DataObject($name);
 
-            $file = array(
-                'name'           => $_obj->name,
-                'content_type'   => $_obj->content_type,
-                'content_length' => $_obj->bytes,
-                'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($_obj->last_modified))
-            );
+            $file = [
+                'name'           => $obj->name,
+                'content_type'   => $obj->content_type,
+                'content_length' => $obj->bytes,
+                'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($obj->last_modified))
+            ];
 
             return $file;
         } catch (\Exception $ex) {
@@ -633,28 +636,28 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @throws DfException
      * @throws \Exception
      */
-    public function streamBlob($container, $name, $params = array())
+    public function streamBlob($container, $name, $params = [])
     {
         $this->checkConnection();
         try {
-            /** @var Container $_container */
-            $_container = $this->_blobConn->Container($container);
-            if (empty($_container)) {
+            /** @var Container $container */
+            $container = $this->_blobConn->Container($container);
+            if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
-            $_obj = $_container->DataObject($name);
+            $obj = $container->DataObject($name);
 
-            header('Last-Modified: ' . $_obj->last_modified);
-            header('Content-Type: ' . $_obj->content_type);
-            header('Content-Length:' . $_obj->content_length);
+            header('Last-Modified: ' . $obj->last_modified);
+            header('Content-Type: ' . $obj->content_type);
+            header('Content-Length:' . $obj->content_length);
 
             $disposition =
                 (isset($params['disposition']) && !empty($params['disposition'])) ? $params['disposition']
                     : 'inline';
 
             header('Content-Disposition: ' . $disposition . '; filename="' . $name . '";');
-            echo $_obj->SaveToString();
+            echo $obj->SaveToString();
         } catch (\Exception $ex) {
             if ('Resource could not be accessed.' == $ex->getMessage()) {
                 $status_header = "HTTP/1.1 404 The specified file '$name' does not exist.";
