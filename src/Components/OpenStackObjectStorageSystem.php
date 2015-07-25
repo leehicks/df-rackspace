@@ -40,7 +40,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      */
     protected function checkConnection()
     {
-        if (empty($this->_blobConn)) {
+        if (empty($this->blobConn)) {
             throw new DfException('No valid connection to blob file storage.');
         }
     }
@@ -113,7 +113,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                     break;
             }
 
-            $this->_blobConn = $os->ObjectStore('cloudFiles', $region);
+            $this->blobConn = $os->ObjectStore('cloudFiles', $region);
             if (!$this->containerExists($this->container)) {
                 $this->createContainer(['name' => $this->container]);
             }
@@ -127,7 +127,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      */
     public function __destruct()
     {
-        unset($this->_blobConn);
+        unset($this->blobConn);
     }
 
     /**
@@ -148,7 +148,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
         try {
             /** @var Collection $containers */
-            $containers = $this->_blobConn->ContainerList();
+            $containers = $this->blobConn->ContainerList();
 
             $out = [];
 
@@ -195,7 +195,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             $result['size'] = $container->bytes;
         } catch (ContainerNotFoundError $ex) {
             throw new DfException('Failed to find container: ' . $ex->getMessage());
@@ -220,7 +220,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
 
             return !empty($container);
         } catch (ContainerNotFoundError $ex) {
@@ -249,7 +249,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         }
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container();
+            $container = $this->blobConn->Container();
             $params = ['name' => $name];
             if (!$container->Create($params)) {
                 throw new \Exception('');
@@ -275,7 +275,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -303,7 +303,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -330,7 +330,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -358,7 +358,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -391,7 +391,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -425,12 +425,12 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $src_container */
-            $src_container = $this->_blobConn->Container($src_container);
+            $src_container = $this->blobConn->Container($src_container);
             if (empty($src_container)) {
                 throw new \Exception("No container named '$src_container'");
             }
             /** @var Container $dest_container */
-            $dest_container = $this->_blobConn->Container($container);
+            $dest_container = $this->blobConn->Container($container);
             if (empty($dest_container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -460,7 +460,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -488,7 +488,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -513,7 +513,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -557,7 +557,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         }
 
         /** @var Container $container */
-        $container = $this->_blobConn->Container($container);
+        $container = $this->blobConn->Container($container);
         if (empty($container)) {
             throw new \Exception("No container named '$container'");
         }
@@ -608,7 +608,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
@@ -641,7 +641,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->_blobConn->Container($container);
+            $container = $this->blobConn->Container($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
