@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
+use DreamFactory\Core\Utility\Session;
 use InvalidArgumentException;
 use DreamFactory\Core\Utility\FileUtilities;
 use DreamFactory\Core\Components\RemoteFileSystem;
@@ -56,7 +57,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $storageType = strtolower(ArrayUtils::get($config, 'storage_type'));
         $credentials = $config;
         $this->container = ArrayUtils::get($config, 'container');
-        //Session::replaceLookups( $credentials, true );
+        Session::replaceLookups( $credentials, true );
 
         switch ($storageType) {
             case 'rackspace cloudfiles':
