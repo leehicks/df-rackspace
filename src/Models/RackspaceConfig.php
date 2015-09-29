@@ -57,6 +57,23 @@ class RackspaceConfig extends BaseServiceConfigModel
         parent::prepareConfigSchemaField($schema);
 
         switch ($schema['name']) {
+            case 'username':
+                $schema['description'] = 'The user name for the service connection.';
+                break;
+            case 'password':
+                $schema['description'] = 'The password for the service connection. For OpenStack only. Leave blank for Rackspace.';
+                break;
+            case 'tenant_name':
+                $schema['description'] = 'Normally your account number.';
+                break;
+            case 'api_key':
+                $schema['label'] = 'API Key';
+                $schema['description'] = 'The API key for the service connection. For Rackspace only. Leave blank for OpenStack.';
+                break;
+            case 'url':
+                $schema['label'] = 'URL';
+                $schema['description'] = 'The URL/endpoint for the service connection.';
+                break;
             case 'region':
                 $schema['type'] = 'picklist';
                 $schema['values'] = [
@@ -65,14 +82,6 @@ class RackspaceConfig extends BaseServiceConfigModel
                     ['label' => 'London', 'name' => 'LON', 'url' => 'https://lon.identity.api.rackspacecloud.com'],
                 ];
                 $schema['description'] = 'Select the region to be accessed by this service connection.';
-                break;
-            case 'key':
-                $schema['label'] = 'Access Key ID';
-                $schema['description'] = 'An AWS account root or IAM access key.';
-                break;
-            case 'secret':
-                $schema['label'] = 'Secret Access Key';
-                $schema['description'] = 'An AWS account root or IAM secret key.';
                 break;
         }
     }
