@@ -4,10 +4,10 @@ namespace DreamFactory\Core\Rackspace\Components;
 use DreamFactory\Core\Components\FileServiceWithContainer;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\FilePublicPath;
-use DreamFactory\Core\Rackspace\Models\RackspaceConfig;
+use DreamFactory\Core\Rackspace\Models\OpenStackConfig;
 use DreamFactory\Library\Utility\ArrayUtils;
 
-class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
+class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
 {
     use FileServiceWithContainer;
 
@@ -18,7 +18,7 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
      */
     public static function getConfig($id)
     {
-        $rosConfig = RackspaceConfig::find($id);
+        $rosConfig = OpenStackConfig::find($id);
         $pathConfig = FilePublicPath::find($id);
 
         $config = [];
@@ -37,9 +37,9 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public static function validateConfig($config, $create=true)
+    public static function validateConfig($config, $create = true)
     {
-        return (RackspaceConfig::validateConfig($config, $create) && FilePublicPath::validateConfig($config, $create));
+        return (OpenStackConfig::validateConfig($config, $create) && FilePublicPath::validateConfig($config, $create));
     }
 
     /**
@@ -47,7 +47,7 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
      */
     public static function setConfig($id, $config)
     {
-        $rosConfig = RackspaceConfig::find($id);
+        $rosConfig = OpenStackConfig::find($id);
         $pathConfig = FilePublicPath::find($id);
         $configPath = [
             'public_path' => ArrayUtils::get($config, 'public_path'),
@@ -77,7 +77,7 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
             $configRos = array_reverse($configRos, true);
             $configRos['service_id'] = $id;
             $configRos = array_reverse($configRos, true);
-            RackspaceConfig::create($configRos);
+            OpenStackConfig::create($configRos);
         }
 
         if (!empty($pathConfig)) {
@@ -99,7 +99,7 @@ class RackspaceObjectStorageConfig implements ServiceConfigHandlerInterface
      */
     public static function getConfigSchema()
     {
-        $rosConfig = new RackspaceConfig();
+        $rosConfig = new OpenStackConfig();
         $pathConfig = new FilePublicPath();
         $out = null;
 
