@@ -90,16 +90,10 @@ class OpenStackConfig extends BaseServiceConfigModel
                 $schema['description'] = 'The user name for the service connection.';
                 break;
             case 'password':
-                $schema['description'] =
-                    'The password for the service connection. For OpenStack only. Leave blank for Rackspace.';
+                $schema['description'] = 'The password for the service connection.';
                 break;
             case 'tenant_name':
                 $schema['description'] = 'Normally your account number.';
-                break;
-            case 'api_key':
-                $schema['label'] = 'API Key';
-                $schema['description'] =
-                    'The API key for the service connection. For Rackspace only. Leave blank for OpenStack.';
                 break;
             case 'url':
                 $schema['label'] = 'URL';
