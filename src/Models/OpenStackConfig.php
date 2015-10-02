@@ -9,7 +9,7 @@ use DreamFactory\Core\Exceptions\BadRequestException;
  *
  * @package DreamFactory\Core\Rackspace\Models
  */
-class RackspaceConfig extends BaseServiceConfigModel
+class OpenStackConfig extends BaseServiceConfigModel
 {
     protected $table = 'rackspace_config';
 
@@ -32,11 +32,11 @@ class RackspaceConfig extends BaseServiceConfigModel
     public static function validateConfig($config, $create = true)
     {
         $validator = static::makeValidator($config, [
-            'username'     => 'required',
-            'tenant_name'  => 'required',
-            'api_key'      => 'required',
-            'url'          => 'required',
-            'region'       => 'required'
+            'username'    => 'required',
+            'password'    => 'required',
+            'tenant_name' => 'required',
+            'url'         => 'required',
+            'region'      => 'required'
         ], $create);
 
         if ($validator->fails()) {
@@ -59,7 +59,11 @@ class RackspaceConfig extends BaseServiceConfigModel
             $out = [];
             foreach ($schema->columns as $name => $column) {
                 /** @var ColumnSchema $column */
-                if (('service_id' === $name) || 'password' === $name || 'storage_type' === $name || $column->autoIncrement) {
+                if (('service_id' === $name) ||
+                    'api_key' === $name ||
+                    'storage_type' === $name ||
+                    $column->autoIncrement
+                ) {
                     continue;
                 }
 
@@ -85,12 +89,11 @@ class RackspaceConfig extends BaseServiceConfigModel
             case 'username':
                 $schema['description'] = 'The user name for the service connection.';
                 break;
+            case 'password':
+                $schema['description'] = 'The password for the service connection.';
+                break;
             case 'tenant_name':
                 $schema['description'] = 'Normally your account number.';
-                break;
-            case 'api_key':
-                $schema['label'] = 'API Key';
-                $schema['description'] = 'The API key for the service connection.';
                 break;
             case 'url':
                 $schema['label'] = 'URL';
