@@ -23,7 +23,7 @@ class DatabaseSeeder extends BaseModelSeeder
             'singleton'      => false
         ],
         [
-            'name'           => 'openstack_obect_storage',
+            'name'           => 'openstack_object_storage',
             'class_name'     => OpenStackObjectStore::class,
             'config_handler' => OpenStackObjectStorageConfig::class,
             'label'          => 'OpenStack Object Storage',
