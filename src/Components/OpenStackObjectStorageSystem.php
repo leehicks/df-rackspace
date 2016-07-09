@@ -5,7 +5,6 @@ use DreamFactory\Core\Utility\Session;
 use InvalidArgumentException;
 use DreamFactory\Core\Utility\FileUtilities;
 use DreamFactory\Core\Components\RemoteFileSystem;
-use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use OpenCloud\Rackspace;
@@ -54,26 +53,26 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      */
     public function __construct($config)
     {
-        $storageType = strtolower(ArrayUtils::get($config, 'storage_type'));
+        $storageType = strtolower(array_get($config, 'storage_type'));
         $credentials = $config;
-        $this->container = ArrayUtils::get($config, 'container');
+        $this->container = array_get($config, 'container');
         Session::replaceLookups( $credentials, true );
 
         switch ($storageType) {
             case 'rackspace cloudfiles':
-                $authUrl = ArrayUtils::get($credentials, 'url', 'https://identity.api.rackspacecloud.com/');
-                $region = ArrayUtils::get($credentials, 'region', 'DFW');
+                $authUrl = array_get($credentials, 'url', 'https://identity.api.rackspacecloud.com/');
+                $region = array_get($credentials, 'region', 'DFW');
                 break;
             default:
-                $authUrl = ArrayUtils::get($credentials, 'url');
-                $region = ArrayUtils::get($credentials, 'region');
+                $authUrl = array_get($credentials, 'url');
+                $region = array_get($credentials, 'region');
                 break;
         }
 
-        $username = ArrayUtils::get($credentials, 'username');
-        $password = ArrayUtils::get($credentials, 'password');
-        $apiKey = ArrayUtils::get($credentials, 'api_key');
-        $tenantName = ArrayUtils::get($credentials, 'tenant_name');
+        $username = array_get($credentials, 'username');
+        $password = array_get($credentials, 'password');
+        $apiKey = array_get($credentials, 'api_key');
+        $tenantName = array_get($credentials, 'tenant_name');
         if (empty($authUrl)) {
             throw new InvalidArgumentException('Object Store authentication URL can not be empty.');
         }
@@ -244,7 +243,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     {
         $this->checkConnection();
 
-        $name = ArrayUtils::get($properties, 'name', ArrayUtils::get($properties, 'path'));
+        $name = array_get($properties, 'name', array_get($properties, 'path'));
         if (empty($name)) {
             throw new BadRequestException('No name found for container in create request.');
         }

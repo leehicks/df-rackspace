@@ -12,7 +12,7 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\File
         parent::stage();
 
         Artisan::call('migrate', ['--path' => 'vendor/dreamfactory/df-rackspace/database/migrations/']);
-        Artisan::call('db:seed', ['--class' => DreamFactory\Core\Rackspace\Database\Seeds\DatabaseSeeder::class]);
+        //Artisan::call('db:seed', ['--class' => DreamFactory\Core\Rackspace\Database\Seeds\DatabaseSeeder::class]);
         if (!$this->serviceExists('ros')) {
             \DreamFactory\Core\Models\Service::create(
                 [

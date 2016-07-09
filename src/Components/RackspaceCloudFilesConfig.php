@@ -50,17 +50,17 @@ class RackspaceCloudFilesConfig implements ServiceConfigHandlerInterface
         $rosConfig = RackspaceConfig::find($id);
         $pathConfig = FilePublicPath::find($id);
         $configPath = [
-            'public_path' => ArrayUtils::get($config, 'public_path'),
-            'container'   => ArrayUtils::get($config, 'container')
+            'public_path' => array_get($config, 'public_path'),
+            'container'   => array_get($config, 'container')
         ];
         $configRos = [
-            'service_id'   => ArrayUtils::get($config, 'service_id'),
-            'username'     => ArrayUtils::get($config, 'username'),
-            'password'     => ArrayUtils::get($config, 'password'),
-            'tenant_name'  => ArrayUtils::get($config, 'tenant_name'),
-            'api_key'      => ArrayUtils::get($config, 'api_key'),
-            'url'          => ArrayUtils::get($config, 'url'),
-            'region'       => ArrayUtils::get($config, 'region'),
+            'service_id'   => array_get($config, 'service_id'),
+            'username'     => array_get($config, 'username'),
+            'password'     => array_get($config, 'password'),
+            'tenant_name'  => array_get($config, 'tenant_name'),
+            'api_key'      => array_get($config, 'api_key'),
+            'url'          => array_get($config, 'url'),
+            'region'       => array_get($config, 'region'),
             'storage_type' => 'rackspace cloudfiles'
         ];
 
