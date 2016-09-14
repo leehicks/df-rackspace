@@ -12,22 +12,20 @@ class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
     use FileServiceWithContainer;
 
     /**
-     * @param int $id
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public static function getConfig($id)
+    public static function getConfig($id, $protect = true)
     {
-        $rosConfig = OpenStackConfig::find($id);
-        $pathConfig = FilePublicPath::find($id);
-
         $config = [];
 
-        if (!empty($rosConfig)) {
+        /** @var OpenStackConfig $rosConfig */
+        if (!empty($rosConfig = OpenStackConfig::find($id))) {
+            $rosConfig->protectedView = $protect;
             $config = $rosConfig->toArray();
         }
 
-        if (!empty($pathConfig)) {
+        /** @var FilePublicPath $pathConfig */
+        if (!empty($pathConfig = FilePublicPath::find($id))) {
             $config = array_merge($config, $pathConfig->toArray());
         }
 
@@ -47,7 +45,9 @@ class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
      */
     public static function setConfig($id, $config)
     {
+        /** @var OpenStackConfig $rosConfig */
         $rosConfig = OpenStackConfig::find($id);
+        /** @var FilePublicPath $pathConfig */
         $pathConfig = FilePublicPath::find($id);
         $configPath = [
             'public_path' => array_get($config, 'public_path'),
