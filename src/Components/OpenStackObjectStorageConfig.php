@@ -1,7 +1,6 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
-use DreamFactory\Core\Components\FileServiceWithContainer;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\OpenStackConfig;
@@ -9,8 +8,6 @@ use DreamFactory\Library\Utility\ArrayUtils;
 
 class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
 {
-    use FileServiceWithContainer;
-
     /**
      * {@inheritdoc}
      */
@@ -105,8 +102,6 @@ class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
 
         $rosSchema = $rosConfig->getConfigSchema();
         $pathSchema = $pathConfig->getConfigSchema();
-
-        static::updatePathSchema($pathSchema);
 
         if (!empty($rosSchema)) {
             $out = $rosSchema;
