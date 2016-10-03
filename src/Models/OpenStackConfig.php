@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Models;
 
+use DreamFactory\Core\Database\Schema\ColumnSchema;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Exceptions\BadRequestException;
 
@@ -14,6 +15,8 @@ class OpenStackConfig extends BaseServiceConfigModel
     protected $table = 'rackspace_config';
 
     protected $encrypted = ['password', 'api_key'];
+
+    protected $protected = ['password'];
 
     protected $fillable = [
         'service_id',

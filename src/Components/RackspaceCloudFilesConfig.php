@@ -1,7 +1,6 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
-use DreamFactory\Core\Components\FileServiceWithContainer;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\RackspaceConfig;
@@ -9,25 +8,21 @@ use DreamFactory\Library\Utility\ArrayUtils;
 
 class RackspaceCloudFilesConfig implements ServiceConfigHandlerInterface
 {
-    use FileServiceWithContainer;
-
     /**
-     * @param int $id
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public static function getConfig($id)
+    public static function getConfig($id, $protect = true)
     {
-        $rosConfig = RackspaceConfig::find($id);
-        $pathConfig = FilePublicPath::find($id);
-
         $config = [];
 
-        if (!empty($rosConfig)) {
+        /** @var RackspaceConfig $rosConfig */
+        if (!empty($rosConfig = RackspaceConfig::find($id))) {
+            $rosConfig->protectedView = $protect;
             $config = $rosConfig->toArray();
         }
 
-        if (!empty($pathConfig)) {
+        /** @var FilePublicPath $pathConfig */
+        if (!empty($pathConfig = FilePublicPath::find($id))) {
             $config = array_merge($config, $pathConfig->toArray());
         }
 
@@ -47,7 +42,9 @@ class RackspaceCloudFilesConfig implements ServiceConfigHandlerInterface
      */
     public static function setConfig($id, $config)
     {
+        /** @var RackspaceConfig $rosConfig */
         $rosConfig = RackspaceConfig::find($id);
+        /** @var FilePublicPath $pathConfig */
         $pathConfig = FilePublicPath::find($id);
         $configPath = [
             'public_path' => array_get($config, 'public_path'),
@@ -105,8 +102,6 @@ class RackspaceCloudFilesConfig implements ServiceConfigHandlerInterface
 
         $rosSchema = $rosConfig->getConfigSchema();
         $pathSchema = $pathConfig->getConfigSchema();
-
-        static::updatePathSchema($pathSchema);
 
         if (!empty($rosSchema)) {
             $out = $rosSchema;

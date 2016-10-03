@@ -7,6 +7,7 @@ use DreamFactory\Core\Utility\FileUtilities;
 use DreamFactory\Core\Components\RemoteFileSystem;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use OpenCloud\Common\Request\Response\Http;
 use OpenCloud\Rackspace;
 use OpenCloud\OpenStack;
 use OpenCloud\Common\Collection;
@@ -56,7 +57,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $storageType = strtolower(array_get($config, 'storage_type'));
         $credentials = $config;
         $this->container = array_get($config, 'container');
-        Session::replaceLookups( $credentials, true );
+        Session::replaceLookups($credentials, true);
 
         switch ($storageType) {
             case 'rackspace cloudfiles':
@@ -657,7 +658,21 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                     : 'inline';
 
             header('Content-Disposition: ' . $disposition . '; filename="' . $name . '";');
-            echo $obj->SaveToString();
+            $index = 0;
+            $size = (integer)$obj->content_length;
+            $chunk = \Config::get('df.file_chunk_size');
+            ob_clean();
+
+            while ($index < $size) {
+                $header = ['Range' => 'bytes=' . $index . '-' . ($index + $chunk - 1)];
+                /** @var Http $result */
+                $result = $container->Service()->Request($obj->Url(), 'GET', $header);
+                $info = $result->info();
+                $length = array_get($info, 'size_download');
+                $index += $length;
+                flush();
+                echo $result->HttpBody();
+            }
         } catch (\Exception $ex) {
             if ('Resource could not be accessed.' == $ex->getMessage()) {
                 $status_header = "HTTP/1.1 404 The specified file '$name' does not exist.";
