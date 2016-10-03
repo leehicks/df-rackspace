@@ -6,9 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
-- DF-641 Download files in chunks
 
 ### Fixed
+
+## [0.5.0] - 2016-10-03
+### Changed
+- DF-826 Protecting passwords.
+- File service config rework from df-core.
+- DF-641 Download files in chunks
 
 ## [0.4.0] - 2016-08-21
 ### Changed
@@ -37,7 +42,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.1.0 - 2015-10-24
 First official release working with the new [df-core](https://github.com/dreamfactorysoftware/df-core) library.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.4.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.2.0...0.3.0
