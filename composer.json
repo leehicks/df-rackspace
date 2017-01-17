@@ -3,7 +3,7 @@
   "description": "Rackspace package containing Rackspace/OpenStack components for the DreamFactory(tm) core.",
   "keywords":    [
     "dreamfactory",
-    "dsp",
+    "api",
     "rest",
     "rackspace",
     "openstack",
@@ -28,7 +28,7 @@
     "wiki":   "https://wiki.dreamfactory.com"
   },
   "require":     {
-    "dreamfactory/df-core":    "~0.6.0",
+    "dreamfactory/df-core":    "~0.7.0",
     "rackspace/php-opencloud": "~1.5.0@stable"
   },
   "autoload":    {
@@ -38,7 +38,7 @@
   },
   "extra":       {
     "branch-alias": {
-      "dev-develop": "0.6.x-dev"
+      "dev-develop": "0.7.x-dev"
     }
   }
 }

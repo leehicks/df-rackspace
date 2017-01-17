@@ -4,10 +4,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-
 ### Changed
-
 ### Fixed
+
+## [0.7.0] - 2017-01-16
+### Changed
+- Dependency changes only
 
 ## [0.6.0] - 2016-11-17
 - Dependency changes only
@@ -45,7 +47,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.1.0 - 2015-10-24
 First official release working with the new [df-core](https://github.com/dreamfactorysoftware/df-core) library.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.6.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.3.1...0.4.0
