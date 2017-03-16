@@ -1,7 +1,7 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Services;
 
-use DreamFactory\Core\Services\RemoteFileService;
+use DreamFactory\Core\File\Services\RemoteFileService;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Rackspace\Components\OpenStackObjectStorageSystem;
 
