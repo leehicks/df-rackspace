@@ -1,12 +1,11 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
-use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\File\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\OpenStackConfig;
 use DreamFactory\Library\Utility\ArrayUtils;
 
-class OpenStackObjectStorageConfig implements ServiceConfigHandlerInterface
+class OpenStackObjectStorageConfig extends OpenStackConfig
 {
     /**
      * {@inheritdoc}

@@ -1,12 +1,11 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
-use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\File\Models\FilePublicPath;
 use DreamFactory\Core\Rackspace\Models\RackspaceConfig;
 use DreamFactory\Library\Utility\ArrayUtils;
 
-class RackspaceCloudFilesConfig implements ServiceConfigHandlerInterface
+class RackspaceCloudFilesConfig extends RackspaceConfig
 {
     /**
      * {@inheritdoc}
