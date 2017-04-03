@@ -3,7 +3,6 @@ namespace DreamFactory\Core\Rackspace\Models;
 
 use DreamFactory\Core\Database\Schema\ColumnSchema;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
-use DreamFactory\Core\Exceptions\BadRequestException;
 
 /**
  * Class RackspaceConfig
@@ -29,26 +28,13 @@ class OpenStackConfig extends BaseServiceConfigModel
         'storage_type'
     ];
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function validateConfig($config, $create = true)
-    {
-        $validator = static::makeValidator($config, [
-            'username'    => 'required',
-            'password'    => 'required',
-            'tenant_name' => 'required',
-            'url'         => 'required',
-            'region'      => 'required'
-        ], $create);
-
-        if ($validator->fails()) {
-            $messages = $validator->messages()->getMessages();
-            throw new BadRequestException('Validation failed.', null, null, $messages);
-        }
-
-        return true;
-    }
+    protected $rules = [
+        'username'    => 'required',
+        'password'    => 'required',
+        'tenant_name' => 'required',
+        'url'         => 'required',
+        'region'      => 'required'
+    ];
 
     /**
      * {@inheritdoc}

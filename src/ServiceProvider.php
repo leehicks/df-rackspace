@@ -3,8 +3,8 @@ namespace DreamFactory\Core\Rackspace;
 
 use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
-use DreamFactory\Core\Rackspace\Components\OpenStackObjectStorageConfig;
-use DreamFactory\Core\Rackspace\Components\RackspaceCloudFilesConfig;
+use DreamFactory\Core\Rackspace\Models\OpenStackObjectStorageConfig;
+use DreamFactory\Core\Rackspace\Models\RackspaceCloudFilesConfig;
 use DreamFactory\Core\Rackspace\Services\OpenStackObjectStore;
 use DreamFactory\Core\Services\ServiceManager;
 use DreamFactory\Core\Services\ServiceType;
