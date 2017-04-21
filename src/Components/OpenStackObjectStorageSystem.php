@@ -4,7 +4,7 @@ namespace DreamFactory\Core\Rackspace\Components;
 use DreamFactory\Core\Utility\Session;
 use InvalidArgumentException;
 use DreamFactory\Core\Utility\FileUtilities;
-use DreamFactory\Core\Components\RemoteFileSystem;
+use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use OpenCloud\Common\Request\Response\Http;
