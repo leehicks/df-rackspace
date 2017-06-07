@@ -1,12 +1,12 @@
 <?php
 namespace DreamFactory\Core\Rackspace\Components;
 
-use DreamFactory\Core\Utility\Session;
-use InvalidArgumentException;
-use DreamFactory\Core\Utility\FileUtilities;
-use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\File\Components\RemoteFileSystem;
+use DreamFactory\Core\Utility\Session;
+use DreamFactory\Core\Utility\FileUtilities;
+use InvalidArgumentException;
 use OpenCloud\Common\Request\Response\Http;
 use OpenCloud\Rackspace;
 use OpenCloud\OpenStack;
@@ -54,64 +54,51 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      */
     public function __construct($config)
     {
-        $storageType = strtolower(array_get($config, 'storage_type'));
-        $credentials = $config;
+        Session::replaceLookups($config, true);
         $this->container = array_get($config, 'container');
-        Session::replaceLookups($credentials, true);
 
-        switch ($storageType) {
-            case 'rackspace cloudfiles':
-                $authUrl = array_get($credentials, 'url', 'https://identity.api.rackspacecloud.com/');
-                $region = array_get($credentials, 'region', 'DFW');
-                break;
-            default:
-                $authUrl = array_get($credentials, 'url');
-                $region = array_get($credentials, 'region');
-                break;
-        }
-
-        $username = array_get($credentials, 'username');
-        $password = array_get($credentials, 'password');
-        $apiKey = array_get($credentials, 'api_key');
-        $tenantName = array_get($credentials, 'tenant_name');
-        if (empty($authUrl)) {
-            throw new InvalidArgumentException('Object Store authentication URL can not be empty.');
-        }
-        if (empty($username)) {
+        if (empty($username = array_get($config, 'username'))) {
             throw new InvalidArgumentException('Object Store username can not be empty.');
         }
 
         $secret = ['username' => $username];
 
-        if (empty($apiKey)) {
-            if (empty($password)) {
+        if (empty($apiKey = array_get($config, 'api_key'))) {
+            if (empty($password = array_get($config, 'password'))) {
                 throw new InvalidArgumentException('Object Store credentials must contain an API key or a password.');
             }
-
+            // openstack
             $secret['password'] = $password;
+            $authUrl = array_get($config, 'url');
+            $region = array_get($config, 'region');
         } else {
+            // rackspace
             $secret['apiKey'] = $apiKey;
+            $authUrl = array_get($config, 'url', 'https://identity.api.rackspacecloud.com/');
+            $region = array_get($config, 'region', 'DFW');
         }
-        if (!empty($tenantName)) {
-            $secret['tenantName'] = $tenantName;
+
+        if (empty($authUrl)) {
+            throw new InvalidArgumentException('Object Store authentication URL can not be empty.');
         }
         if (empty($region)) {
             throw new InvalidArgumentException('Object Store region can not be empty.');
         }
 
+        if (!empty($tenantName = array_get($config, 'tenant_name'))) {
+            $secret['tenantName'] = $tenantName;
+        }
+
         try {
-            switch ($storageType) {
-                case 'rackspace cloudfiles':
-                    $pos = stripos($authUrl, '/v');
-                    if (false !== $pos) {
-                        $authUrl = substr($authUrl, 0, $pos);
-                    }
-                    $authUrl = FileUtilities::fixFolderPath($authUrl) . 'v2.0';
-                    $os = new Rackspace($authUrl, $secret);
-                    break;
-                default:
-                    $os = new OpenStack($authUrl, $secret);
-                    break;
+            if (empty($apiKey)) {
+                $os = new OpenStack($authUrl, $secret);
+            } else {
+                $pos = stripos($authUrl, '/v');
+                if (false !== $pos) {
+                    $authUrl = substr($authUrl, 0, $pos);
+                }
+                $authUrl = FileUtilities::fixFolderPath($authUrl) . 'v2.0';
+                $os = new Rackspace($authUrl, $secret);
             }
 
             $this->blobConn = $os->ObjectStore('cloudFiles', $region);
@@ -235,7 +222,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @param array $properties
      * @param array $metadata
      *
-     * @return array|void
+     * @return array
      * @throws BadRequestException
      * @throws DfException
      * @throws \Exception

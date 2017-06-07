@@ -25,7 +25,6 @@ class OpenStackConfig extends BaseServiceConfigModel
         'api_key',
         'url',
         'region',
-        'storage_type'
     ];
 
     protected $rules = [

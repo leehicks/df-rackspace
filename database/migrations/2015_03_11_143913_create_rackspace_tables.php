@@ -8,7 +8,6 @@ use Illuminate\Database\Migrations\Migration;
  */
 class CreateRackspaceTables extends Migration
 {
-
     /**
      * Run the migrations.
      *
@@ -28,7 +27,6 @@ class CreateRackspaceTables extends Migration
                 $t->longText('api_key')->nullable();
                 $t->string('url')->nullable();
                 $t->string('region')->nullable();
-                $t->string('storage_type')->nullable();
             }
         );
     }
