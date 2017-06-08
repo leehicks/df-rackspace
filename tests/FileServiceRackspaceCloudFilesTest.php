@@ -1,5 +1,4 @@
 <?php
-use DreamFactory\Core\Enums\Verbs;
 
 class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\FileServiceTestCase
 {
@@ -28,7 +27,6 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\File
                         'api_key'      => env('ROS_API_KEY'),
                         'url'          => env('ROS_URL'),
                         'region'       => env('ROS_REGION'),
-                        'storage_type' => env('ROS_STORAGE_TYPE'),
                         'container'    => env('ROS_CONTAINER')
                     ]
                 ]

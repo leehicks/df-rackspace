@@ -25,7 +25,6 @@ class RackspaceConfig extends BaseServiceConfigModel
         'api_key',
         'url',
         'region',
-        'storage_type'
     ];
 
     protected $rules = [
@@ -96,5 +95,4 @@ class RackspaceConfig extends BaseServiceConfigModel
                 break;
         }
     }
-
 }
