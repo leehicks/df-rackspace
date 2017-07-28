@@ -1,12 +1,16 @@
 <?php
+
 namespace DreamFactory\Core\Rackspace\Components;
 
+use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Utility\FileUtilities;
 use InvalidArgumentException;
+use OpenCloud\Common\Exceptions\ObjFetchError;
 use OpenCloud\Common\Request\Response\Http;
 use OpenCloud\Rackspace;
 use OpenCloud\OpenStack;
@@ -492,11 +496,12 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
     /**
      * @param string $container
      * @param string $name
+     * @param bool   $noCheck
      *
      * @throws DfException
      * @throws \Exception
      */
-    public function deleteBlob($container = '', $name = '')
+    public function deleteBlob($container = '', $name = '', $noCheck = false)
     {
         $this->checkConnection();
         try {
@@ -510,14 +515,19 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             try {
                 $obj = $container->DataObject($name);
             } catch (\Exception $ex) {
-                // doesn't exist
-                return;
+                if ($noCheck) {
+                    return;
+                }
+                throw $ex;
             }
             if ($obj) {
                 $obj->Delete();
             }
         } catch (\Exception $ex) {
-            throw new DfException("Failed to delete blob '$name': " . $ex->getMessage());
+            if ($ex instanceof ObjFetchError) {
+                throw new NotFoundException("File '$name' was not found.'");
+            }
+            throw new DfException('Failed to delete blob "' . $name . '": ' . $ex->getMessage());
         }
     }
 
@@ -661,10 +671,12 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 echo $result->HttpBody();
             }
         } catch (\Exception $ex) {
-            if ('Resource could not be accessed.' == $ex->getMessage()) {
-                $status_header = "HTTP/1.1 404 The specified file '$name' does not exist.";
+            if ($ex instanceof ObjFetchError) {
+                $code = HttpStatusCodes::HTTP_NOT_FOUND;
+                $status_header = "HTTP/1.1 $code";
                 header($status_header);
                 header('Content-Type: text/html');
+                echo 'Failed to stream/download file. File ' . $name . ' was not found. ' . $ex->getMessage();
             } else {
                 throw new DfException('Failed to stream blob: ' . $ex->getMessage());
             }
