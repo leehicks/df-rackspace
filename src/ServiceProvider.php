@@ -1,7 +1,6 @@
 <?php
 namespace DreamFactory\Core\Rackspace;
 
-use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
 use DreamFactory\Core\Rackspace\Models\OpenStackObjectStorageConfig;
 use DreamFactory\Core\Rackspace\Models\RackspaceCloudFilesConfig;
@@ -11,8 +10,6 @@ use DreamFactory\Core\Services\ServiceType;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    use ServiceDocBuilder;
-
     public function register()
     {
         // Add our service types.
@@ -24,9 +21,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'description'     => 'File service supporting Rackspace Cloud Files Storage system.',
                     'group'           => ServiceTypeGroups::FILE,
                     'config_handler'  => RackspaceCloudFilesConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, OpenStackObjectStore::getApiDocInfo($service));
-                    },
                     'factory'         => function ($config) {
                         return new OpenStackObjectStore($config);
                     },
@@ -39,9 +33,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'description'     => 'File service supporting OpenStack Object Storage system.',
                     'group'           => ServiceTypeGroups::FILE,
                     'config_handler'  => OpenStackObjectStorageConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, OpenStackObjectStore::getApiDocInfo($service));
-                    },
                     'factory'         => function ($config) {
                         return new OpenStackObjectStore($config);
                     },
