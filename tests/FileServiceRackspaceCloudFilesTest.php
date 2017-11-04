@@ -1,5 +1,7 @@
 <?php
 
+use DreamFactory\Core\Enums\Verbs;
+
 class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\FileServiceTestCase
 {
     protected static $staged = false;
@@ -63,5 +65,23 @@ class FileServiceRackspaceCloudFilesTest extends \DreamFactory\Core\Testing\File
         $this->assertEquals(1, 1);
         //This feature is not currently supported  by Rackspace Could Files implementation.
         //$rs = $this->call(Verbs::GET, $this->prefix."?include_properties=true");
+    }
+
+    public function testPOSTZipFileFromUrlWithExtractAndClean()
+    {
+        $rs = $this->makeRequest(
+            Verbs::POST,
+            static::FOLDER_1 . '/f2/',
+            ['url' => 'http://' . static::LOCAL_HOST . '/testfiles.zip', 'extract' => 'true', 'clean' => 'true']
+        );
+        $content = json_encode($rs->getContent(), JSON_UNESCAPED_SLASHES);
+
+        $this->assertEquals('{"name":"' .
+            static::FOLDER_1 .
+            '/f2","path":"' .
+            static::FOLDER_1 .
+            '/f2/"}',
+            $content);
+        $this->makeRequest(Verbs::DELETE, static::FOLDER_1 . '/', ['force' => 1]);
     }
 }
