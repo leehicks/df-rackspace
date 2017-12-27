@@ -17,7 +17,7 @@ use OpenCloud\OpenStack;
 use OpenCloud\Common\Collection;
 use OpenCloud\ObjectStore\Service;
 use OpenCloud\ObjectStore\Container;
-use OpenCloud\ObjectStore\DataObject;
+use OpenCloud\ObjectStore\Resource\DataObject;
 use OpenCloud\Common\Exceptions\ContainerNotFoundError;
 
 /**
@@ -105,7 +105,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 $os = new Rackspace($authUrl, $secret);
             }
 
-            $this->blobConn = $os->ObjectStore('cloudFiles', $region);
+            $this->blobConn = $os->objectStoreService('cloudFiles', $region);
             if (!$this->containerExists($this->container)) {
                 $this->createContainer(['name' => $this->container]);
             }
@@ -212,7 +212,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
         try {
             /** @var Container $container */
-            $container = $this->blobConn->Container($container);
+            $container = $this->blobConn->getContainer($container);
 
             return !empty($container);
         } catch (ContainerNotFoundError $ex) {
@@ -350,18 +350,19 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $this->checkConnection();
         try {
             /** @var Container $container */
-            $container = $this->blobConn->Container($container);
+            $container = $this->blobConn->getContainer($container);
             if (empty($container)) {
                 throw new \Exception("No container named '$container'");
             }
 
+            /** @var DataObject $obj */
             $obj = $container->DataObject();
-            $obj->SetData($blob);
-            $obj->name = $name;
+            $obj->setContent($blob);
+            $obj->setName($name);
             if (!empty($type)) {
-                $obj->content_type = $type;
+                $obj->setContentType($type);
             }
-            if (!$obj->Create()) {
+            if (!$obj->update()) {
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
@@ -555,7 +556,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         }
 
         /** @var Container $container */
-        $container = $this->blobConn->Container($container);
+        $container = $this->blobConn->getContainer($container);
         if (empty($container)) {
             throw new \Exception("No container named '$container'");
         }
@@ -566,21 +567,21 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         $out = [];
 
         /** @var DataObject $obj */
-        while (($obj = $list->Next())) {
-            if (!empty($obj->name)) {
-                if (0 == strcmp($prefix, $obj->name)) {
+        while ($obj = $list->Next()) {
+            if (!empty($obj->getName()) && $obj->isDirectory() === false) {
+                if (0 == strcmp($prefix, $obj->getName())) {
                     continue;
                 }
                 $out[] = [
-                    'name'           => $obj->name,
-                    'content_type'   => $obj->content_type,
-                    'content_length' => $obj->bytes,
-                    'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($obj->last_modified))
+                    'name'           => $obj->getName(),
+                    'content_type'   => $obj->getContentType(),
+                    'content_length' => $obj->getContentLength(),
+                    'last_modified'  => gmdate('D, d M Y H:i:s \G\M\T', strtotime($obj->getLastModified()))
                 ];
-            } elseif (!empty($obj->subdir)) // sub directories formatted differently
+            } elseif (!empty($obj->getDirectory())) // sub directories formatted differently
             {
                 $out[] = [
-                    'name'           => $obj->subdir,
+                    'name'           => $obj->getName(),
                     'content_type'   => null,
                     'content_length' => 0,
                     'last_modified'  => null
