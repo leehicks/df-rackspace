@@ -29,7 +29,7 @@
   },
   "require":     {
     "dreamfactory/df-file":    "~0.5.0",
-    "rackspace/php-opencloud": "~1.5.0@stable"
+    "rackspace/php-opencloud": "^1.16"
   },
   "autoload":    {
     "psr-4": {
