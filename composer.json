@@ -38,7 +38,8 @@
   },
   "extra":       {
     "branch-alias": {
-      "dev-develop": "0.13.x-dev"
+      "dev-develop": "0.13.x-dev",
+      "dev-rackspace-sdk-update": "0.13.x-dev"
     },
     "laravel": {
       "providers": [
