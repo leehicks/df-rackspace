@@ -12,8 +12,6 @@ use DreamFactory\Core\Utility\FileUtilities;
 use InvalidArgumentException;
 use OpenCloud\Common\Exceptions\ObjFetchError;
 use OpenCloud\Common\Request\Response\Http;
-use OpenCloud\Rackspace;
-use OpenCloud\OpenStack;
 use OpenCloud\Common\Collection;
 use OpenCloud\ObjectStore\Service;
 use OpenCloud\ObjectStore\Container;
@@ -95,14 +93,14 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
         try {
             if (empty($apiKey)) {
-                $os = new OpenStack($authUrl, $secret);
+                $os = new DfOpenStack($authUrl, $secret);
             } else {
                 $pos = stripos($authUrl, '/v');
                 if (false !== $pos) {
                     $authUrl = substr($authUrl, 0, $pos);
                 }
                 $authUrl = FileUtilities::fixFolderPath($authUrl) . 'v2.0';
-                $os = new Rackspace($authUrl, $secret);
+                $os = new DfRackspace($authUrl, $secret);
             }
 
             $this->blobConn = $os->ObjectStore('cloudFiles', $region);
