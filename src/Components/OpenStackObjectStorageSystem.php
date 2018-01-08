@@ -9,6 +9,7 @@ use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Utility\FileUtilities;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use InvalidArgumentException;
 use OpenCloud\Common\Exceptions\ObjFetchError;
 use OpenCloud\Rackspace;
@@ -217,6 +218,11 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
         } catch (ContainerNotFoundError $ex) {
             return false;
         } catch (\Exception $ex) {
+            if($ex instanceof ClientErrorResponseException){
+                if($ex->getCode() === 404 || str_contains($ex->getMessage(), '404')){
+                    return false;
+                }
+            }
             throw new DfException('Failed to list containers: ' . $ex->getMessage());
         }
     }
@@ -239,10 +245,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             throw new BadRequestException('No name found for container in create request.');
         }
         try {
-            /** @var Container $container */
-            $container = $this->blobConn->getContainer();
-            $params = ['name' => $name];
-            if (!$container->Create($params)) {
+            if (!$container = $this->blobConn->createContainer($name)) {
                 throw new \Exception('');
             }
 
