@@ -3,6 +3,9 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Fixed
+- DF-1285 Fixed error responses
+
 ## [0.14.0] - 2017-12-28
 - Added package discovery
 - DF-1150 Update copyright and support email

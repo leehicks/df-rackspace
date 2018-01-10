@@ -5,10 +5,12 @@ namespace DreamFactory\Core\Rackspace\Components;
 use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Utility\FileUtilities;
+use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Exception\ClientErrorResponseException;
 use InvalidArgumentException;
 use OpenCloud\Common\Exceptions\ObjFetchError;
@@ -110,6 +112,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 $this->createContainer(['name' => $this->container]);
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException('Failed to launch OpenStack service: ' . $ex->getMessage());
         }
     }
@@ -152,6 +155,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             return $out;
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException('Failed to list containers: ' . $ex->getMessage());
         }
     }
@@ -189,9 +193,8 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             /** @var Container $container */
             $container = $this->blobConn->getContainer($container);
             $result['size'] = $container->bytes;
-        } catch (ContainerNotFoundError $ex) {
-            throw new DfException('Failed to find container: ' . $ex->getMessage());
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException('Failed to get container: ' . $ex->getMessage());
         }
 
@@ -215,14 +218,13 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
             $container = $this->blobConn->getContainer($container);
 
             return !empty($container);
-        } catch (ContainerNotFoundError $ex) {
-            return false;
         } catch (\Exception $ex) {
-            if($ex instanceof ClientErrorResponseException){
-                if($ex->getCode() === 404 || str_contains($ex->getMessage(), '404')){
+            if ($ex instanceof ClientErrorResponseException) {
+                if ($ex->getCode() === 404 || str_contains($ex->getMessage(), '404')) {
                     return false;
                 }
             }
+            static::handleGuzzleException($ex);
             throw new DfException('Failed to list containers: ' . $ex->getMessage());
         }
     }
@@ -251,6 +253,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             return ['name' => $name, 'path' => $name];
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to create container '$name': " . $ex->getMessage());
         }
     }
@@ -278,6 +281,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to update container '$container': " . $ex->getMessage());
         }
     }
@@ -306,6 +310,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to delete container '$container': " . $ex->getMessage());
         }
     }
@@ -368,6 +373,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to create blob '$name': " . $ex->getMessage());
         }
     }
@@ -398,6 +404,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             $container->uploadObject($name, file_get_contents($localFileName), $params);
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to create blob '$name': " . $ex->getMessage());
         }
     }
@@ -433,6 +440,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             $source->Copy($destination);
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to copy blob '$name': " . $ex->getMessage());
         }
     }
@@ -463,6 +471,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new \Exception('');
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to retrieve blob '$name': " . $ex->getMessage());
         }
     }
@@ -489,6 +498,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             return $obj->SaveToString();
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException("Failed to retrieve blob '$name': " . $ex->getMessage());
         }
     }
@@ -524,6 +534,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 $obj->Delete();
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             if ($ex instanceof ObjFetchError) {
                 throw new NotFoundException("File '$name' was not found.'");
             }
@@ -629,6 +640,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
 
             return $file;
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             throw new DfException('Failed to list metadata: ' . $ex->getMessage());
         }
     }
@@ -679,6 +691,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 echo $result->getBody();
             }
         } catch (\Exception $ex) {
+            static::handleGuzzleException($ex);
             if ($ex instanceof ObjFetchError) {
                 $code = HttpStatusCodes::HTTP_NOT_FOUND;
                 $status_header = "HTTP/1.1 $code";
@@ -689,5 +702,67 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new DfException('Failed to stream blob: ' . $ex->getMessage());
             }
         }
+    }
+
+    /**
+     * @param $ex
+     *
+     * @throws \DreamFactory\Core\Exceptions\BadRequestException
+     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\NotFoundException
+     */
+    public static function handleGuzzleException($ex)
+    {
+        if ($ex instanceof BadResponseException) {
+            $code = static::getGuzzleExceptionCode($ex);
+            $message = static::cleanGuzzleExceptionMessage($ex);
+            switch ($code) {
+                case 404:
+                    throw new NotFoundException($message);
+                case 400:
+                    throw new BadRequestException($message);
+                default:
+                    throw new InternalServerErrorException($message);
+            }
+        }
+    }
+
+    /**
+     * @param \Guzzle\Http\Exception\BadResponseException $ex
+     *
+     * @return int
+     */
+    public static function getGuzzleExceptionCode(BadResponseException $ex)
+    {
+        $msgs = explode("\n", $ex->getMessage());
+        foreach ($msgs as $msg) {
+            if ($msg !== $code = str_replace('[status code]', '', $msg)) {
+                return (integer)trim($code);
+            }
+        }
+    }
+
+    /**
+     * @param \Guzzle\Http\Exception\BadResponseException $ex
+     *
+     * @return string
+     */
+    public static function cleanGuzzleExceptionMessage(BadResponseException $ex)
+    {
+        $message = '';
+        $msgs = explode("\n", $ex->getMessage());
+        foreach ($msgs as $msg) {
+            if ($msg !== $code = str_replace('[status code]', '', $msg)) {
+                $message = '[' . trim($code) . '] ' . $message;
+            } elseif ($msg !== $phrase = str_replace('[reason phrase]', '', $msg)) {
+                $message .= (empty($message)) ? trim($phrase) : '. ' . trim($phrase);
+            } elseif ($msg !== $url = str_replace('[url]', '', $msg)) {
+                $message .= (empty($message)) ? trim($url) : '. ' . trim($url);
+            } else {
+                $message .= (empty($message)) ? $msg : '. ' . $msg;
+            }
+        }
+
+        return $message;
     }
 }
