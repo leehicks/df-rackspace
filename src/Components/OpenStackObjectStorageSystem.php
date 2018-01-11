@@ -494,9 +494,12 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 throw new \Exception("No container named '$container'");
             }
 
-            $obj = $container->DataObject($name);
+            $obj = $container->getObject($name);
+            $request = $obj->getClient()->get($obj->getUrl());
+            /** @var \Guzzle\Http\Message\Response $result */
+            $result = $request->send();
 
-            return $obj->SaveToString();
+            return $result->getBody(true);
         } catch (\Exception $ex) {
             static::handleGuzzleException($ex);
             throw new DfException("Failed to retrieve blob '$name': " . $ex->getMessage());
