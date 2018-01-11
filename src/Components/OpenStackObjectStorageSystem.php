@@ -5,8 +5,8 @@ namespace DreamFactory\Core\Rackspace\Components;
 use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Exceptions\DfException;
 use DreamFactory\Core\Exceptions\BadRequestException;
-use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
+use DreamFactory\Core\Exceptions\RestException;
 use DreamFactory\Core\File\Components\RemoteFileSystem;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Utility\FileUtilities;
@@ -20,7 +20,6 @@ use OpenCloud\Common\Collection;
 use OpenCloud\ObjectStore\Service;
 use OpenCloud\ObjectStore\Resource\Container;
 use OpenCloud\ObjectStore\Resource\DataObject;
-use OpenCloud\Common\Exceptions\ContainerNotFoundError;
 
 /**
  * Class OpenStackObjectStorageSystem
@@ -711,8 +710,8 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
      * @param $ex
      *
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
-     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
      * @throws \DreamFactory\Core\Exceptions\NotFoundException
+     * @throws \DreamFactory\Core\Exceptions\RestException
      */
     public static function handleGuzzleException($ex)
     {
@@ -725,7 +724,7 @@ class OpenStackObjectStorageSystem extends RemoteFileSystem
                 case 400:
                     throw new BadRequestException($message);
                 default:
-                    throw new InternalServerErrorException($message);
+                    throw new RestException($code, $message);
             }
         }
     }
