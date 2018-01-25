@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+## [0.14.1] - 2018-01-25
+### Fixed
+- DF-1285 Fixed error responses
+### Changed
+- Updated for latest version of rackspace sdk
+
 ## [0.14.0] - 2017-12-28
 - Added package discovery
 - DF-1150 Update copyright and support email
@@ -75,7 +81,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 0.1.0 - 2015-10-24
 First official release working with the new [df-core](https://github.com/dreamfactorysoftware/df-core) library.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.14.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.14.1...HEAD
+[0.14.1]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.14.0...0.14.1
 [0.14.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/dreamfactorysoftware/df-rackspace/compare/0.11.0...0.12.0
